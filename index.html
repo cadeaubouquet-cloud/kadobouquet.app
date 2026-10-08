@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KADO BOUQUET - Management System</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,448 +16,456 @@
             --brand-light: #FDF8F8;
             --brand-border: #F3E2E5;
         }
-        /* Style Tambahan untuk Mobile UX */
-        body { -webkit-tap-highlight-color: transparent; }
-        .pb-safe { padding-bottom: calc(4rem + env(safe-area-inset-bottom)); }
+        /* Transisi Mulus untuk Sidebar WA Style */
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-800 antialiased pb-20 md:pb-0">
+<body class="bg-slate-50 font-sans text-slate-800 antialiased">
 
-    <div class="flex flex-col md:flex-row min-h-screen">
-        
-        <!-- SIDEBAR (DESKTOP) & NAVBAR ATAS (MOBILE) -->
-        <aside class="w-full md:w-64 bg-slate-900 text-white flex flex-row md:flex-col justify-between md:justify-start p-4 shadow-xl sticky top-0 z-40">
-            <!-- LOGO TOKO -->
-            <div class="flex items-center md:flex-col gap-3 md:gap-0 p-2 md:p-3 bg-white rounded-xl shadow-sm border border-pink-100 w-full md:w-auto justify-between md:justify-center">
-                <div class="flex items-center gap-2 md:flex-col">
-                    <img src="https://1drv.ms/i/c/da5eb252f1c3d2c8/IQCb4JmNtfBgQ7Ew9iEhLtJxASAxnRdtDVc6Qxt-cjd_xdU?e=cNGKLh" alt="Kado Bouquet Logo" class="h-10 md:h-20 object-contain" onerror="this.src='https://via.placeholder.com/150?text=KADO+BOUQUET'">
-                    <span class="text-[10px] text-pink-700 font-bold tracking-wider uppercase hidden md:inline">Kota Mojokerto</span>
+    <!-- HEADER NAVIGATION UTAMA (MOBILE & LAPTOP) -->
+    <div class="flex min-h-screen relative overflow-x-hidden">
+
+        <!-- BACKDROP REDUP UNTUK MOBILE SAAT SIDEBAR BUKA -->
+        <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-40 hidden md:hidden transition-opacity"></div>
+
+        <!-- SIDEBAR STYLE WHATSAPP (SLIDE-IN ON MOBILE, FIXED ON DESKTOP) -->
+        <aside id="main-sidebar" class="fixed md:static inset-y-0 left-0 w-72 bg-slate-900 text-white flex flex-col z-50 transform -translate-x-full md:translate-x-0 sidebar-transition shadow-2xl md:shadow-none">
+            
+            <!-- HEADER SIDEBAR (LOGO & TOMBOL CLOSE) -->
+            <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-3 bg-white p-2 rounded-xl border border-pink-100 flex-1">
+                    <img src="KADO.png" alt="Kado Logo" class="h-10 object-contain" onerror="this.src='https://via.placeholder.com/100?text=KADO'">
+                    <div>
+                        <h1 class="text-xs font-bold text-slate-800 leading-tight">KADO BOUQUET</h1>
+                        <p class="text-[9px] text-pink-700 font-bold uppercase tracking-wider">Mojokerto</p>
+                    </div>
                 </div>
-                <span class="text-xs font-bold text-slate-800 md:hidden">KADO APP</span>
+                <!-- Tombol Tutup Sidebar di HP -->
+                <button onclick="toggleSidebar()" class="md:hidden p-2 text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
             </div>
 
-            <!-- MENU NAVIGASI DESKTOP -->
-            <nav class="hidden md:block space-y-1 mt-4 flex-1 text-sm">
-                <button onclick="showTab('dashboard')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium hover:bg-slate-800 transition">
-                    <i data-lucide="layout-dashboard" class="text-rose-300"></i> Dashboard & Chart
+            <!-- LIST MENU UTAMA -->
+            <nav class="flex-1 p-3 space-y-1.5 text-sm overflow-y-auto">
+                <button onclick="navTo('dashboard')" class="nav-btn w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl font-medium hover:bg-slate-800 text-slate-300 hover:text-white transition">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5 text-rose-400"></i> Dashboard & Chart
                 </button>
-                <button onclick="showTab('calendar')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium hover:bg-slate-800 transition">
-                    <i data-lucide="calendar" class="text-rose-300"></i> Kalender Pesanan
+                <button onclick="navTo('calendar')" class="nav-btn w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl font-medium hover:bg-slate-800 text-slate-300 hover:text-white transition">
+                    <i data-lucide="calendar" class="w-5 h-5 text-rose-400"></i> Kalender Pesanan
                 </button>
-                <button onclick="showTab('orders')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium hover:bg-slate-800 transition">
-                    <i data-lucide="clipboard-list" class="text-rose-300"></i> Daftar Pesanan
+                <button onclick="navTo('orders')" class="nav-btn w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl font-medium hover:bg-slate-800 text-slate-300 hover:text-white transition">
+                    <i data-lucide="clipboard-list" class="w-5 h-5 text-rose-400"></i> Daftar Pesanan
                 </button>
-                <button onclick="showTab('catalog')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium hover:bg-slate-800 transition">
-                    <i data-lucide="flower-2" class="text-rose-300"></i> Katalog & Profit
+                <button onclick="navTo('catalog')" class="nav-btn w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl font-medium hover:bg-slate-800 text-slate-300 hover:text-white transition">
+                    <i data-lucide="flower-2" class="w-5 h-5 text-rose-400"></i> Katalog & Profit
                 </button>
-                <button onclick="showTab('hpp')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium hover:bg-slate-800 transition">
-                    <i data-lucide="calculator" class="text-rose-300"></i> Kalkulator HPP
+                <button onclick="navTo('hpp')" class="nav-btn w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl font-medium hover:bg-slate-800 text-slate-300 hover:text-white transition">
+                    <i data-lucide="calculator" class="w-5 h-5 text-rose-400"></i> Kalkulator HPP Rinci
                 </button>
-                <button onclick="showTab('inventory')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium hover:bg-slate-800 transition">
-                    <i data-lucide="package" class="text-rose-300"></i> Stok Bahan Baku
+                <button onclick="navTo('inventory')" class="nav-btn w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl font-medium hover:bg-slate-800 text-slate-300 hover:text-white transition">
+                    <i data-lucide="package" class="w-5 h-5 text-rose-400"></i> Stok Bahan Baku
                 </button>
-                <button onclick="showTab('finance')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium hover:bg-slate-800 transition">
-                    <i data-lucide="wallet" class="text-rose-300"></i> Laporan Keuangan
+                <button onclick="navTo('finance')" class="nav-btn w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl font-medium hover:bg-slate-800 text-slate-300 hover:text-white transition">
+                    <i data-lucide="wallet" class="w-5 h-5 text-rose-400"></i> Laporan Keuangan
                 </button>
             </nav>
 
-            <div class="hidden md:block text-[11px] text-slate-400 p-3 border-t border-slate-800 text-center">
-                IG/TikTok: @kadobouquet.mjk
+            <div class="p-3 border-t border-slate-800 text-center text-[11px] text-slate-400">
+                IG & TikTok: <b>@kadobouquet.mjk</b>
             </div>
         </aside>
 
-        <!-- MENU BOTTOM BAR KHUSUS HP/MOBILE -->
-        <div class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900 text-white flex justify-around p-2 border-t border-slate-800 z-50 text-[10px]">
-            <button onclick="showTab('dashboard')" class="flex flex-col items-center py-1 px-2 text-rose-300">
-                <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
-            </button>
-            <button onclick="showTab('orders')" class="flex flex-col items-center py-1 px-2 text-slate-400 hover:text-rose-300">
-                <i data-lucide="clipboard-list" class="w-5 h-5"></i> Pesanan
-            </button>
-            <button onclick="showTab('catalog')" class="flex flex-col items-center py-1 px-2 text-slate-400 hover:text-rose-300">
-                <i data-lucide="flower-2" class="w-5 h-5"></i> Katalog
-            </button>
-            <button onclick="showTab('hpp')" class="flex flex-col items-center py-1 px-2 text-slate-400 hover:text-rose-300">
-                <i data-lucide="calculator" class="w-5 h-5"></i> HPP
-            </button>
-            <button onclick="showTab('finance')" class="flex flex-col items-center py-1 px-2 text-slate-400 hover:text-rose-300">
-                <i data-lucide="wallet" class="w-5 h-5"></i> Keuangan
-            </button>
+        <!-- KONTEN UTAMA DENGAN TOPBAR MOBILE -->
+        <div class="flex-1 flex flex-col min-w-0 min-h-screen">
+            
+            <!-- TOP BAR KHUSUS HP UNTUK BUKA MENU -->
+            <header class="bg-slate-900 text-white p-3.5 flex items-center justify-between md:hidden sticky top-0 z-30 shadow-md">
+                <button onclick="toggleSidebar()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-rose-300 flex items-center gap-2 text-xs font-bold">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                    <span>MENU</span>
+                </button>
+                <span class="font-bold text-sm tracking-wide text-rose-200">KADO BOUQUET</span>
+            </header>
+
+            <!-- KONTEN HALAMAN -->
+            <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+
+                <!-- TAB 1: DASHBOARD -->
+                <div id="tab-dashboard" class="tab-content space-y-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold text-slate-800">Dashboard Bisnis</h2>
+                            <p class="text-xs md:text-sm text-slate-500">Ringkasan performa Kado Bouquet</p>
+                        </div>
+                        <button onclick="exportToCSV()" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs md:text-sm font-medium flex items-center justify-center gap-2 shadow">
+                            <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Download Excel
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                        <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
+                            <p class="text-xs md:text-sm font-medium text-slate-500 mb-1">Total Pemasukan</p>
+                            <h3 id="dash-income" class="text-xl md:text-2xl font-bold text-slate-800">Rp 0</h3>
+                        </div>
+                        <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 border-l-4 border-l-rose-500">
+                            <p class="text-xs md:text-sm font-medium text-slate-500 mb-1">Total Pengeluaran</p>
+                            <h3 id="dash-expense" class="text-xl md:text-2xl font-bold text-slate-800">Rp 0</h3>
+                        </div>
+                        <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 border-l-4 border-l-sky-500">
+                            <p class="text-xs md:text-sm font-medium text-slate-500 mb-1">Laba/Rugi Bersih</p>
+                            <h3 id="dash-profit" class="text-xl md:text-2xl font-bold text-slate-800">Rp 0</h3>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                        <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
+                            <h3 class="font-semibold text-slate-700 mb-4 text-sm md:text-base flex items-center gap-2">
+                                <i data-lucide="trending-up" class="text-emerald-500 w-4 h-4"></i> Grafik Pemasukan vs Pengeluaran
+                            </h3>
+                            <canvas id="financeChart" height="180"></canvas>
+                        </div>
+                        <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
+                            <h3 class="font-semibold text-slate-700 mb-4 text-sm md:text-base flex items-center gap-2">
+                                <i data-lucide="pie-chart" class="text-purple-500 w-4 h-4"></i> Proporsi Arus Kas
+                            </h3>
+                            <div class="w-full md:w-1/2 mx-auto">
+                                <canvas id="pieChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: KALENDER PESANAN -->
+                <div id="tab-calendar" class="tab-content hidden space-y-6">
+                    <h2 class="text-xl md:text-2xl font-bold text-slate-800">📅 Kalender Deadline Orderan</h2>
+                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
+                        <p class="text-xs md:text-sm text-slate-500 mb-4">Daftar pengerjaan pesanan berdasarkan tanggal deadline:</p>
+                        <div id="calendar-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: DAFTAR PESANAN & NOTA -->
+                <div id="tab-orders" class="tab-content hidden space-y-6">
+                    <h2 class="text-xl md:text-2xl font-bold text-slate-800">🛒 Buat Pesanan Buket</h2>
+
+                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
+                        <form id="form-pesanan" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Nama Pemesan</label>
+                                <input type="text" id="order-pemesan" placeholder="Kak Annisa" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">No. WhatsApp</label>
+                                <input type="tel" id="order-wa" placeholder="082233210751" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Pilih Produk Buket</label>
+                                <select id="order-katalog" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" onchange="autoFillHarga()">
+                                    <option value="">-- Pilih Buket --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Metode Pengiriman</label>
+                                <select id="order-pengiriman" class="w-full px-3 py-2 border rounded-lg text-sm outline-none">
+                                    <option value="Ambil Sendiri (Self Pick-Up)">Ambil Sendiri (Self Pick-Up)</option>
+                                    <option value="Dikirim (Kurir Toko/Gojek)">Dikirim (Kurir Toko/Gojek)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Total Harga Jual (Rp)</label>
+                                <input type="number" id="order-harga" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" oninput="hitungSisaBayar()" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Status Pembayaran</label>
+                                <select id="order-status-bayar" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" onchange="toggleNominalBayar()">
+                                    <option value="Belum Bayar">Belum Bayar</option>
+                                    <option value="DP">DP (Uang Muka)</option>
+                                    <option value="Lunas">Lunas</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Nominal Uang Diterima (Rp)</label>
+                                <input type="number" id="order-nominal-bayar" value="0" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" oninput="hitungSisaBayar()">
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Sisa Tagihan (Rp)</label>
+                                <input type="number" id="order-sisa" value="0" class="w-full px-3 py-2 border rounded-lg text-sm outline-none bg-slate-100" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Deadline Ambil/Kirim</label>
+                                <input type="date" id="order-deadline" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Custom Request / Ucapan</label>
+                                <input type="text" id="order-request" placeholder="Warna pita pink, ucapan: Happy Graduation!" class="w-full px-3 py-2 border rounded-lg text-sm outline-none">
+                            </div>
+                            <div class="md:col-span-2 mt-2">
+                                <button type="submit" class="w-full py-2.5 bg-rose-700 hover:bg-rose-800 text-white font-medium rounded-lg text-sm transition shadow">
+                                    + Simpan Pesanan & Potong Stok
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+                        <table class="w-full text-left text-xs md:text-sm text-slate-600">
+                            <thead class="bg-slate-50 text-slate-700">
+                                <tr>
+                                    <th class="p-3 md:p-4">Pemesan</th>
+                                    <th class="p-3 md:p-4">Produk & Metode</th>
+                                    <th class="p-3 md:p-4">Total & Bayar</th>
+                                    <th class="p-3 md:p-4">Status</th>
+                                    <th class="p-3 md:p-4">Invoice</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-orders-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 4: KATALOG & ESTIMASI KEUNTUNGAN -->
+                <div id="tab-catalog" class="tab-content hidden space-y-6">
+                    <h2 class="text-xl md:text-2xl font-bold text-slate-800">💐 Katalog Buket & Profit</h2>
+
+                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
+                        <form id="form-katalog" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Nama Buket</label>
+                                <input type="text" id="cat-nama" placeholder="Buket Balon XL" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Harga Jual (Rp)</label>
+                                <input type="number" id="cat-harga" placeholder="150000" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Estimasi Modal/HPP (Rp)</label>
+                                <input type="number" id="cat-modal" placeholder="80000" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
+                            </div>
+                            <div class="md:col-span-3">
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">URL Foto Buket (opsional)</label>
+                                <input type="text" id="cat-foto" placeholder="https://..." class="w-full px-3 py-2 border rounded-lg text-sm outline-none">
+                            </div>
+                            <div class="md:col-span-3">
+                                <button type="submit" class="w-full py-2 bg-rose-700 hover:bg-rose-800 text-white font-medium text-sm rounded-lg">+ Simpan Katalog</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="katalog-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6"></div>
+                </div>
+
+                <!-- TAB 5: KALKULATOR HPP RINCI DENGAN MULTI-TABEL -->
+                <div id="tab-hpp" class="tab-content hidden space-y-6">
+                    <h2 class="text-xl md:text-2xl font-bold text-slate-800">🧮 Kalkulator HPP & Simpan Hitungan</h2>
+
+                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 space-y-6">
+                        <div>
+                            <label class="block text-xs md:text-sm font-medium text-slate-700 mb-1">Nama Hitungan HPP Buket</label>
+                            <input type="text" id="hpp-title" placeholder="Contoh: HPP Buket Mawar Balon Size XL" class="w-full md:w-1/2 px-3 py-2 border rounded-lg text-sm outline-none">
+                        </div>
+
+                        <!-- TABEL 1: BAHAN BAKU -->
+                        <div class="overflow-x-auto">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-slate-700 text-xs md:text-sm">1. Biaya Bahan Baku</h4>
+                                <button onclick="addRow('tbl-bahan')" class="px-2 py-1 bg-rose-100 text-rose-800 rounded text-xs font-bold">+ Tambah Bahan</button>
+                            </div>
+                            <table class="w-full text-left text-xs text-slate-600">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="p-2">Item</th>
+                                        <th class="p-2 w-16">Jumlah</th>
+                                        <th class="p-2 w-24">Harga/Item</th>
+                                        <th class="p-2 w-24">Subtotal</th>
+                                        <th class="p-2 w-8"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbl-bahan"></tbody>
+                            </table>
+                            <div class="text-right text-xs font-bold mt-2">Total Bahan: <span id="tot-bahan" class="text-slate-800">Rp 0</span></div>
+                        </div>
+
+                        <!-- TABEL 2: BIAYA OPERASIONAL -->
+                        <div class="overflow-x-auto">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-slate-700 text-xs md:text-sm">2. Biaya Operasional / Jasa</h4>
+                                <button onclick="addRow('tbl-operasional')" class="px-2 py-1 bg-rose-100 text-rose-800 rounded text-xs font-bold">+ Tambah Operasional</button>
+                            </div>
+                            <table class="w-full text-left text-xs text-slate-600">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="p-2">Item</th>
+                                        <th class="p-2 w-16">Jumlah</th>
+                                        <th class="p-2 w-24">Harga/Unit</th>
+                                        <th class="p-2 w-24">Subtotal</th>
+                                        <th class="p-2 w-8"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbl-operasional"></tbody>
+                            </table>
+                            <div class="text-right text-xs font-bold mt-2">Total Operasional: <span id="tot-operasional" class="text-slate-800">Rp 0</span></div>
+                        </div>
+
+                        <!-- TABEL 3: BIAYA TAMBAHAN -->
+                        <div class="overflow-x-auto">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-slate-700 text-xs md:text-sm">3. Biaya Tambahan / Pelengkap</h4>
+                                <button onclick="addRow('tbl-tambahan')" class="px-2 py-1 bg-rose-100 text-rose-800 rounded text-xs font-bold">+ Tambah Pelengkap</button>
+                            </div>
+                            <table class="w-full text-left text-xs text-slate-600">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="p-2">Item</th>
+                                        <th class="p-2 w-16">Jumlah</th>
+                                        <th class="p-2 w-24">Harga/Unit</th>
+                                        <th class="p-2 w-24">Subtotal</th>
+                                        <th class="p-2 w-8"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbl-tambahan"></tbody>
+                            </table>
+                            <div class="text-right text-xs font-bold mt-2">Total Tambahan: <span id="tot-tambahan" class="text-slate-800">Rp 0</span></div>
+                        </div>
+
+                        <!-- REKAP TOTAL HPP -->
+                        <div class="p-4 bg-rose-50 rounded-lg border border-rose-100 space-y-2 text-xs md:text-sm">
+                            <div class="flex justify-between font-bold text-slate-800"><span>TOTAL HPP AKHIR (MODAL):</span><span id="res-hpp-grand" class="text-rose-800 text-base md:text-lg">Rp 0</span></div>
+                            <div class="flex items-center gap-2 pt-2">
+                                <label class="text-xs font-medium text-slate-600">Target Profit Bersih (%):</label>
+                                <input type="number" id="hpp-margin-pct" value="40" class="w-16 px-2 py-1 border rounded text-xs" oninput="calcGrandHPP()">
+                            </div>
+                            <div class="flex justify-between text-sm md:text-base font-bold text-emerald-700 pt-2 border-t border-rose-200">
+                                <span>Rekomendasi Harga Jual:</span>
+                                <span id="res-harga-rekomendasi" class="text-base md:text-lg">Rp 0</span>
+                            </div>
+                        </div>
+
+                        <button onclick="saveHPPRecord()" class="w-full py-2.5 bg-rose-700 hover:bg-rose-800 text-white font-medium rounded-lg text-sm shadow">
+                            💾 Simpan Perhitungan HPP Ini
+                        </button>
+                    </div>
+
+                    <!-- RIWAYAT HPP -->
+                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 text-sm md:text-base mb-4">Riwayat HPP Tersimpan</h3>
+                        <div id="hpp-history-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 6: STOK BAHAN BAKU -->
+                <div id="tab-inventory" class="tab-content hidden space-y-6">
+                    <h2 class="text-xl md:text-2xl font-bold text-slate-800">📦 Stok Bahan Baku</h2>
+                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
+                        <form id="form-stok" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Nama Bahan Baku</label>
+                                <input type="text" id="stok-nama" placeholder="Cellophane Pink Soft" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Kategori</label>
+                                <select id="stok-kategori" class="w-full px-3 py-2 border rounded-lg text-sm outline-none">
+                                    <option value="Wrapping">Wrapping</option>
+                                    <option value="Bunga">Bunga Segar/Artificial</option>
+                                    <option value="Balon">Balon & PVC</option>
+                                    <option value="Pita">Pita & Tali</option>
+                                    <option value="Aksesori">Aksesori/Isi Buket</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Jumlah Stok Saat Ini</label>
+                                <input type="number" id="stok-jumlah" placeholder="30" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
+                            </div>
+                            <div class="md:col-span-3">
+                                <button type="submit" class="w-full py-2 bg-rose-700 hover:bg-rose-800 text-white font-medium text-sm rounded-lg">+ Tambah Stok Bahan</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+                        <table class="w-full text-left text-xs md:text-sm text-slate-600">
+                            <thead class="bg-slate-50 text-slate-700">
+                                <tr>
+                                    <th class="p-3 md:p-4">Nama Bahan</th>
+                                    <th class="p-3 md:p-4">Kategori</th>
+                                    <th class="p-3 md:p-4">Stok</th>
+                                    <th class="p-3 md:p-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-stok-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 7: LAPORAN KEUANGAN TERPISAH -->
+                <div id="tab-finance" class="tab-content hidden space-y-6">
+                    <h2 class="text-xl md:text-2xl font-bold text-slate-800">💳 Pencatatan Arus Kas Keuangan</h2>
+
+                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h3 id="form-tx-title" class="font-semibold text-slate-700 mb-4 text-sm md:text-base">Input Transaksi Kas</h3>
+                        <form id="form-tx" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <input type="hidden" id="tx-id">
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Jenis Arus Kas</label>
+                                <select id="tx-type" class="w-full px-3 py-2 border rounded-lg text-sm outline-none">
+                                    <option value="IN">Uang Masuk (Pemasukan)</option>
+                                    <option value="OUT">Uang Keluar (Pengeluaran)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Kategori / Keterangan</label>
+                                <input type="text" id="tx-category" placeholder="DP Buket / Belanja Pita" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Nominal (Rp)</label>
+                                <input type="number" id="tx-amount" placeholder="100000" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
+                            </div>
+                            <div class="md:col-span-3 flex gap-2">
+                                <button type="submit" id="btn-save-tx" class="flex-1 py-2.5 bg-rose-700 hover:bg-rose-800 text-white font-medium text-sm rounded-lg">Simpan Transaksi</button>
+                                <button type="button" id="btn-cancel-tx" onclick="resetTxForm()" class="hidden py-2.5 px-4 bg-slate-200 text-slate-700 text-sm font-medium rounded-lg">Batal</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+                            <div class="p-3 md:p-4 bg-emerald-50 border-b border-emerald-100">
+                                <h3 class="font-bold text-emerald-800 text-xs md:text-sm">💚 Laporan Uang Masuk (Pemasukan)</h3>
+                            </div>
+                            <table class="w-full text-left text-xs text-slate-600">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="p-3">Kategori</th>
+                                        <th class="p-3">Nominal</th>
+                                        <th class="p-3">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabel-tx-in-body" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+                            <div class="p-3 md:p-4 bg-rose-50 border-b border-rose-100">
+                                <h3 class="font-bold text-rose-800 text-xs md:text-sm">💔 Laporan Uang Keluar (Pengeluaran)</h3>
+                            </div>
+                            <table class="w-full text-left text-xs text-slate-600">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="p-3">Kategori</th>
+                                        <th class="p-3">Nominal</th>
+                                        <th class="p-3">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabel-tx-out-body" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
         </div>
-
-        <!-- KONTEN UTAMA -->
-        <main class="flex-1 p-4 md:p-8 overflow-y-auto">
-
-            <!-- TAB 1: DASHBOARD -->
-            <div id="tab-dashboard" class="tab-content space-y-6">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-bold text-slate-800">Dashboard Bisnis</h2>
-                        <p class="text-xs md:text-sm text-slate-500">Ringkasan performa Kado Bouquet</p>
-                    </div>
-                    <button onclick="exportToCSV()" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs md:text-sm font-medium flex items-center justify-center gap-2 shadow">
-                        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Download Excel
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
-                        <p class="text-xs md:text-sm font-medium text-slate-500 mb-1">Total Pemasukan</p>
-                        <h3 id="dash-income" class="text-xl md:text-2xl font-bold text-slate-800">Rp 0</h3>
-                    </div>
-                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 border-l-4 border-l-rose-500">
-                        <p class="text-xs md:text-sm font-medium text-slate-500 mb-1">Total Pengeluaran</p>
-                        <h3 id="dash-expense" class="text-xl md:text-2xl font-bold text-slate-800">Rp 0</h3>
-                    </div>
-                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 border-l-4 border-l-sky-500">
-                        <p class="text-xs md:text-sm font-medium text-slate-500 mb-1">Laba/Rugi Bersih</p>
-                        <h3 id="dash-profit" class="text-xl md:text-2xl font-bold text-slate-800">Rp 0</h3>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
-                        <h3 class="font-semibold text-slate-700 mb-4 text-sm md:text-base flex items-center gap-2">
-                            <i data-lucide="trending-up" class="text-emerald-500 w-4 h-4"></i> Grafik Pemasukan vs Pengeluaran
-                        </h3>
-                        <canvas id="financeChart" height="200"></canvas>
-                    </div>
-                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
-                        <h3 class="font-semibold text-slate-700 mb-4 text-sm md:text-base flex items-center gap-2">
-                            <i data-lucide="pie-chart" class="text-purple-500 w-4 h-4"></i> Proporsi Arus Kas
-                        </h3>
-                        <div class="w-full md:w-1/2 mx-auto">
-                            <canvas id="pieChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 2: KALENDER PESANAN -->
-            <div id="tab-calendar" class="tab-content hidden space-y-6">
-                <h2 class="text-xl md:text-2xl font-bold text-slate-800">📅 Kalender Deadline Orderan</h2>
-                <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
-                    <div id="calendar-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
-                </div>
-            </div>
-
-            <!-- TAB 3: DAFTAR PESANAN & NOTA -->
-            <div id="tab-orders" class="tab-content hidden space-y-6">
-                <h2 class="text-xl md:text-2xl font-bold text-slate-800">🛒 Buat Pesanan Buket</h2>
-
-                <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
-                    <form id="form-pesanan" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Nama Pemesan</label>
-                            <input type="text" id="order-pemesan" placeholder="Kak Annisa" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">No. WhatsApp</label>
-                            <input type="tel" id="order-wa" placeholder="082233210751" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Pilih Produk Buket</label>
-                            <select id="order-katalog" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" onchange="autoFillHarga()">
-                                <option value="">-- Pilih Buket --</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Metode Pengiriman</label>
-                            <select id="order-pengiriman" class="w-full px-3 py-2 border rounded-lg text-sm outline-none">
-                                <option value="Ambil Sendiri">Ambil Sendiri (Self Pick-Up)</option>
-                                <option value="Dikirim">Dikirim (Kurir Toko/Gojek)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Total Harga Jual (Rp)</label>
-                            <input type="number" id="order-harga" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" oninput="hitungSisaBayar()" required>
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Status Pembayaran</label>
-                            <select id="order-status-bayar" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" onchange="toggleNominalBayar()">
-                                <option value="Belum Bayar">Belum Bayar</option>
-                                <option value="DP">DP (Uang Muka)</option>
-                                <option value="Lunas">Lunas</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Nominal Uang Diterima (Rp)</label>
-                            <input type="number" id="order-nominal-bayar" value="0" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" oninput="hitungSisaBayar()">
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Sisa Tagihan (Rp)</label>
-                            <input type="number" id="order-sisa" value="0" class="w-full px-3 py-2 border rounded-lg text-sm outline-none bg-slate-100" readonly>
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Deadline Ambil/Kirim</label>
-                            <input type="date" id="order-deadline" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Custom Request / Ucapan</label>
-                            <input type="text" id="order-request" placeholder="Warna pita pink..." class="w-full px-3 py-2 border rounded-lg text-sm outline-none">
-                        </div>
-                        <div class="md:col-span-2 mt-2">
-                            <button type="submit" class="w-full py-2.5 bg-rose-700 hover:bg-rose-800 text-white font-medium rounded-lg text-sm transition shadow">
-                                + Simpan Pesanan & Potong Stok
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- RESPONSIF TABEL UNTUK LAPTOP & HP -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
-                    <table class="w-full text-left text-xs md:text-sm text-slate-600">
-                        <thead class="bg-slate-50 text-slate-700">
-                            <tr>
-                                <th class="p-3 md:p-4">Pemesan</th>
-                                <th class="p-3 md:p-4">Produk</th>
-                                <th class="p-3 md:p-4">Total & Bayar</th>
-                                <th class="p-3 md:p-4">Status</th>
-                                <th class="p-3 md:p-4">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabel-orders-body" class="divide-y divide-slate-100"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- TAB 4: KATALOG & ESTIMASI KEUNTUNGAN -->
-            <div id="tab-catalog" class="tab-content hidden space-y-6">
-                <h2 class="text-xl md:text-2xl font-bold text-slate-800">💐 Katalog Buket & Profit</h2>
-
-                <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
-                    <form id="form-katalog" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Nama Buket</label>
-                            <input type="text" id="cat-nama" placeholder="Buket Balon XL" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Harga Jual (Rp)</label>
-                            <input type="number" id="cat-harga" placeholder="150000" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Estimasi Modal/HPP (Rp)</label>
-                            <input type="number" id="cat-modal" placeholder="80000" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
-                        </div>
-                        <div class="md:col-span-3">
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">URL Foto Buket (opsional)</label>
-                            <input type="text" id="cat-foto" placeholder="https://..." class="w-full px-3 py-2 border rounded-lg text-sm outline-none">
-                        </div>
-                        <div class="md:col-span-3">
-                            <button type="submit" class="w-full py-2 bg-rose-700 hover:bg-rose-800 text-white font-medium text-sm rounded-lg">+ Simpan Katalog</button>
-                        </div>
-                    </form>
-                </div>
-
-                <div id="katalog-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6"></div>
-            </div>
-
-            <!-- TAB 5: KALKULATOR HPP RINCI -->
-            <div id="tab-hpp" class="tab-content hidden space-y-6">
-                <h2 class="text-xl md:text-2xl font-bold text-slate-800">🧮 Kalkulator HPP Rinci</h2>
-
-                <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 space-y-6">
-                    <div>
-                        <label class="block text-xs md:text-sm font-medium text-slate-700 mb-1">Nama Hitungan HPP Buket</label>
-                        <input type="text" id="hpp-title" placeholder="HPP Buket Mawar Balon XL" class="w-full md:w-1/2 px-3 py-2 border rounded-lg text-sm outline-none">
-                    </div>
-
-                    <!-- TABEL 1: BAHAN BAKU -->
-                    <div class="overflow-x-auto">
-                        <div class="flex justify-between items-center mb-2">
-                            <h4 class="font-bold text-slate-700 text-xs md:text-sm">1. Biaya Bahan Baku</h4>
-                            <button onclick="addRow('tbl-bahan')" class="px-2 py-1 bg-rose-100 text-rose-800 rounded text-xs font-bold">+ Bahan</button>
-                        </div>
-                        <table class="w-full text-left text-xs text-slate-600">
-                            <thead class="bg-slate-50">
-                                <tr>
-                                    <th class="p-2">Item</th>
-                                    <th class="p-2 w-16">Qty</th>
-                                    <th class="p-2 w-24">Harga</th>
-                                    <th class="p-2 w-24">Subtotal</th>
-                                    <th class="p-2 w-8"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbl-bahan"></tbody>
-                        </table>
-                        <div class="text-right text-xs font-bold mt-2">Total Bahan: <span id="tot-bahan" class="text-slate-800">Rp 0</span></div>
-                    </div>
-
-                    <!-- TABEL 2: BIAYA OPERASIONAL -->
-                    <div class="overflow-x-auto">
-                        <div class="flex justify-between items-center mb-2">
-                            <h4 class="font-bold text-slate-700 text-xs md:text-sm">2. Biaya Operasional / Jasa</h4>
-                            <button onclick="addRow('tbl-operasional')" class="px-2 py-1 bg-rose-100 text-rose-800 rounded text-xs font-bold">+ Operasional</button>
-                        </div>
-                        <table class="w-full text-left text-xs text-slate-600">
-                            <thead class="bg-slate-50">
-                                <tr>
-                                    <th class="p-2">Item</th>
-                                    <th class="p-2 w-16">Qty</th>
-                                    <th class="p-2 w-24">Harga</th>
-                                    <th class="p-2 w-24">Subtotal</th>
-                                    <th class="p-2 w-8"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbl-operasional"></tbody>
-                        </table>
-                        <div class="text-right text-xs font-bold mt-2">Total Operasional: <span id="tot-operasional" class="text-slate-800">Rp 0</span></div>
-                    </div>
-
-                    <!-- TABEL 3: BIAYA TAMBAHAN -->
-                    <div class="overflow-x-auto">
-                        <div class="flex justify-between items-center mb-2">
-                            <h4 class="font-bold text-slate-700 text-xs md:text-sm">3. Biaya Pelengkap / Lainnya</h4>
-                            <button onclick="addRow('tbl-tambahan')" class="px-2 py-1 bg-rose-100 text-rose-800 rounded text-xs font-bold">+ Pelengkap</button>
-                        </div>
-                        <table class="w-full text-left text-xs text-slate-600">
-                            <thead class="bg-slate-50">
-                                <tr>
-                                    <th class="p-2">Item</th>
-                                    <th class="p-2 w-16">Qty</th>
-                                    <th class="p-2 w-24">Harga</th>
-                                    <th class="p-2 w-24">Subtotal</th>
-                                    <th class="p-2 w-8"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbl-tambahan"></tbody>
-                        </table>
-                        <div class="text-right text-xs font-bold mt-2">Total Pelengkap: <span id="tot-tambahan" class="text-slate-800">Rp 0</span></div>
-                    </div>
-
-                    <!-- REKAP TOTAL HPP -->
-                    <div class="p-4 bg-rose-50 rounded-lg border border-rose-100 space-y-2 text-xs md:text-sm">
-                        <div class="flex justify-between font-bold text-slate-800"><span>TOTAL HPP (MODAL):</span><span id="res-hpp-grand" class="text-rose-800 text-base md:text-lg">Rp 0</span></div>
-                        <div class="flex items-center gap-2 pt-2">
-                            <label class="text-xs font-medium text-slate-600">Target Profit (%):</label>
-                            <input type="number" id="hpp-margin-pct" value="40" class="w-16 px-2 py-1 border rounded text-xs" oninput="calcGrandHPP()">
-                        </div>
-                        <div class="flex justify-between text-sm md:text-base font-bold text-emerald-700 pt-2 border-t border-rose-200">
-                            <span>Rekomendasi Harga:</span>
-                            <span id="res-harga-rekomendasi" class="text-base md:text-lg">Rp 0</span>
-                        </div>
-                    </div>
-
-                    <button onclick="saveHPPRecord()" class="w-full py-2.5 bg-rose-700 hover:bg-rose-800 text-white font-medium rounded-lg text-sm shadow">
-                        💾 Simpan Hitungan HPP
-                    </button>
-                </div>
-
-                <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="font-bold text-slate-800 text-sm md:text-base mb-4">Riwayat HPP Tersimpan</h3>
-                    <div id="hpp-history-list" class="space-y-3"></div>
-                </div>
-            </div>
-
-            <!-- TAB 6: STOK BAHAN BAKU -->
-            <div id="tab-inventory" class="tab-content hidden space-y-6">
-                <h2 class="text-xl md:text-2xl font-bold text-slate-800">📦 Stok Bahan Baku</h2>
-                <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
-                    <form id="form-stok" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Nama Bahan Baku</label>
-                            <input type="text" id="stok-nama" placeholder="Cellophane Pink Soft" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Kategori</label>
-                            <select id="stok-kategori" class="w-full px-3 py-2 border rounded-lg text-sm outline-none">
-                                <option value="Wrapping">Wrapping</option>
-                                <option value="Bunga">Bunga Segar/Artificial</option>
-                                <option value="Balon">Balon & PVC</option>
-                                <option value="Pita">Pita & Tali</option>
-                                <option value="Aksesori">Aksesori/Isi Buket</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Jumlah Stok Saat Ini</label>
-                            <input type="number" id="stok-jumlah" placeholder="30" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
-                        </div>
-                        <div class="md:col-span-3">
-                            <button type="submit" class="w-full py-2 bg-rose-700 hover:bg-rose-800 text-white font-medium text-sm rounded-lg">+ Tambah Stok Bahan</button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
-                    <table class="w-full text-left text-xs md:text-sm text-slate-600">
-                        <thead class="bg-slate-50 text-slate-700">
-                            <tr>
-                                <th class="p-3 md:p-4">Nama Bahan</th>
-                                <th class="p-3 md:p-4">Kategori</th>
-                                <th class="p-3 md:p-4">Stok</th>
-                                <th class="p-3 md:p-4">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabel-stok-body" class="divide-y divide-slate-100"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- TAB 7: LAPORAN KEUANGAN -->
-            <div id="tab-finance" class="tab-content hidden space-y-6">
-                <h2 class="text-xl md:text-2xl font-bold text-slate-800">💳 Pencatatan Keuangan</h2>
-
-                <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 id="form-tx-title" class="font-semibold text-slate-700 mb-4 text-sm md:text-base">Input Transaksi Kas</h3>
-                    <form id="form-tx" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <input type="hidden" id="tx-id">
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Jenis Arus Kas</label>
-                            <select id="tx-type" class="w-full px-3 py-2 border rounded-lg text-sm outline-none">
-                                <option value="IN">Uang Masuk (Pemasukan)</option>
-                                <option value="OUT">Uang Keluar (Pengeluaran)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Kategori / Keterangan</label>
-                            <input type="text" id="tx-category" placeholder="DP Buket / Belanja Pita" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
-                        </div>
-                        <div>
-                            <label class="block text-xs md:text-sm font-medium text-slate-600 mb-1">Nominal (Rp)</label>
-                            <input type="number" id="tx-amount" placeholder="100000" class="w-full px-3 py-2 border rounded-lg text-sm outline-none" required>
-                        </div>
-                        <div class="md:col-span-3 flex gap-2">
-                            <button type="submit" id="btn-save-tx" class="flex-1 py-2.5 bg-rose-700 hover:bg-rose-800 text-white font-medium text-sm rounded-lg">Simpan Transaksi</button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
-                        <div class="p-3 md:p-4 bg-emerald-50 border-b border-emerald-100">
-                            <h3 class="font-bold text-emerald-800 text-xs md:text-sm">💚 Uang Masuk (Pemasukan)</h3>
-                        </div>
-                        <table class="w-full text-left text-xs text-slate-600">
-                            <thead class="bg-slate-50">
-                                <tr>
-                                    <th class="p-3">Kategori</th>
-                                    <th class="p-3">Nominal</th>
-                                    <th class="p-3">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabel-tx-in-body" class="divide-y divide-slate-100"></tbody>
-                        </table>
-                    </div>
-
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
-                        <div class="p-3 md:p-4 bg-rose-50 border-b border-rose-100">
-                            <h3 class="font-bold text-rose-800 text-xs md:text-sm">💔 Uang Keluar (Pengeluaran)</h3>
-                        </div>
-                        <table class="w-full text-left text-xs text-slate-600">
-                            <thead class="bg-slate-50">
-                                <tr>
-                                    <th class="p-3">Kategori</th>
-                                    <th class="p-3">Nominal</th>
-                                    <th class="p-3">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabel-tx-out-body" class="divide-y divide-slate-100"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </main>
     </div>
 
     <!-- MODAL PRINT INVOICE -->
@@ -492,12 +500,27 @@
 
         let financeChart, pieChart;
 
-        window.showTab = function(tabId) {
+        // FUNGSI TOGGLE SIDEBAR WA STYLE
+        function toggleSidebar() {
+            const sidebar = document.getElementById('main-sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+
+        function navTo(tabId) {
+            // Sembunyikan semua tab
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             const target = document.getElementById(`tab-${tabId}`);
             if (target) target.classList.remove('hidden');
+
+            // Tutup sidebar otomatis di HP setelah memilih menu
+            if (window.innerWidth < 768) {
+                toggleSidebar();
+            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
+        }
 
         function updateDashboard() {
             let income = transactions.filter(t => t.type === 'IN').reduce((acc, curr) => acc + curr.amount, 0);
@@ -550,9 +573,9 @@
             const tbody = document.getElementById(tbodyId);
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td class="p-1"><input type="text" value="${nama}" placeholder="Nama item" class="item-nama w-full px-1.5 py-1 border rounded text-xs"></td>
-                <td class="p-1"><input type="number" value="${qty}" class="item-qty w-full px-1.5 py-1 border rounded text-xs" oninput="calcGrandHPP()"></td>
-                <td class="p-1"><input type="number" value="${price}" class="item-price w-full px-1.5 py-1 border rounded text-xs" oninput="calcGrandHPP()"></td>
+                <td class="p-1"><input type="text" value="${nama}" placeholder="Nama item" class="item-nama w-full px-2 py-1 border rounded text-xs"></td>
+                <td class="p-1"><input type="number" value="${qty}" class="item-qty w-full px-2 py-1 border rounded text-xs" oninput="calcGrandHPP()"></td>
+                <td class="p-1"><input type="number" value="${price}" class="item-price w-full px-2 py-1 border rounded text-xs" oninput="calcGrandHPP()"></td>
                 <td class="p-1 font-bold item-subtotal text-[11px]">Rp 0</td>
                 <td class="p-1 text-center"><button onclick="this.closest('tr').remove(); calcGrandHPP();" class="text-rose-600 font-bold">×</button></td>
             `;
@@ -603,7 +626,7 @@
 
             localStorage.setItem('kado_saved_hpp', JSON.stringify(savedHPP));
             renderHPPRecords();
-            alert('Hasil HPP tersimpan!');
+            alert('Hasil HPP berhasil disimpan!');
         }
 
         function renderHPPRecords() {
@@ -673,7 +696,7 @@
                     <td class="p-3 font-semibold">${s.nama}</td>
                     <td class="p-3">${s.kategori}</td>
                     <td class="p-3 font-bold ${isLow ? 'text-rose-600' : 'text-slate-800'}">${s.jumlah}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isLow ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}">${isLow ? 'Menipis' : 'Aman'}</span></td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isLow ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}">${isLow ? 'Stok Menipis' : 'Aman'}</span></td>
                 </tr>`;
             }).join('');
         }
@@ -715,7 +738,7 @@
                     <td class="p-3">Total: <b>Rp ${parseInt(o.harga).toLocaleString('id-ID')}</b><br><small class="text-emerald-600 text-[10px]">Bayar: Rp ${parseInt(o.bayar).toLocaleString('id-ID')}</small></td>
                     <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${o.statusBayar === 'Lunas' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${o.statusBayar}</span></td>
                     <td class="p-3">
-                        <button onclick="openInvoiceModal(${idx})" class="px-2 py-1 bg-slate-800 text-white rounded text-[10px]">Invoice</button>
+                        <button onclick="openInvoiceModal(${idx})" class="px-2 py-1 bg-slate-800 text-white rounded text-[10px]">Cetak Invoice</button>
                     </td>
                 </tr>
             `).join('');
@@ -733,7 +756,7 @@
                     <td class="p-2.5">${t.category}</td>
                     <td class="p-2.5 font-bold text-emerald-600">Rp ${t.amount.toLocaleString('id-ID')}</td>
                     <td class="p-2.5">
-                        <button onclick="deleteTxById('${t.id}')" class="text-rose-600 font-bold">×</button>
+                        <button onclick="deleteTxById('${t.id}')" class="text-rose-600 font-bold">Hapus</button>
                     </td>
                 </tr>
             `).join('');
@@ -743,7 +766,7 @@
                     <td class="p-2.5">${t.category}</td>
                     <td class="p-2.5 font-bold text-rose-600">Rp ${t.amount.toLocaleString('id-ID')}</td>
                     <td class="p-2.5">
-                        <button onclick="deleteTxById('${t.id}')" class="text-rose-600 font-bold">×</button>
+                        <button onclick="deleteTxById('${t.id}')" class="text-rose-600 font-bold">Hapus</button>
                     </td>
                 </tr>
             `).join('');
@@ -873,7 +896,7 @@
             link.click();
         }
 
-        // INITIAL LOAD ROW
+        // INITIAL LOAD
         addRow('tbl-bahan', 'Kertas Cellophane', 3, 3500);
         addRow('tbl-operasional', 'Jasa Rangkai', 1, 15000);
         addRow('tbl-tambahan', 'Pita & Kartu Ucapan', 1, 5000);
